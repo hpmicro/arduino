@@ -1,0 +1,131 @@
+# Copyright (c) 2024 HPMicro
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# For more info:
+# https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
+
+menu.opt=Optimize
+menu.upload_method=Bootloader Mode
+menu.build_type=Build Type
+
+##############################################################
+HPM5300EVK.name=HPM5300EVK
+
+HPM5300EVK.build.board=hpm5300evk
+HPM5300EVK.build.arch=riscv32
+HPM5300EVK.build.soc_cfg=hpm5300
+HPM5300EVK.build.f_cpu=480000000L
+HPM5300EVK.build.mcu=HPM5361
+HPM5300EVK.build.soc_series=HPM5300
+HPM5300EVK.build.soc_flags="-DSOC_HAS_I2C0=1" "-DSOC_HAS_PWM=1" "-DSOC_HAS_RNG=1"
+HPM5300EVK.build.jlink_soc=HPM5361xCBx
+HPM5300EVK.vid=0x34B7
+HPM5300EVK.pid=0x0005
+HPM5300EVK.upload.vid=0x34B7
+HPM5300EVK.upload.pid=0x0005
+HPM5300EVK.build.core=hpmicro
+HPM5300EVK.build.cpu_flags=
+HPM5300EVK.build.variant=hpm5300evk
+HPM5300EVK.upload.tool=Serial
+
+#-- Optimizations
+HPM5300EVK.menu.opt.osstd=Smallest (default)
+
+HPM5300EVK.menu.opt.o1std=Fast (-O1)
+HPM5300EVK.menu.opt.o1std.build.flags.optimize=-O1
+HPM5300EVK.menu.opt.o1std.build.flags.ldspecs=
+
+HPM5300EVK.menu.opt.o2std=Faster (-O2)
+HPM5300EVK.menu.opt.o2std.build.flags.optimize=-O2
+HPM5300EVK.menu.opt.o2std.build.flags.ldspecs=
+
+HPM5300EVK.menu.opt.o3std=Fastest (-O3)
+HPM5300EVK.menu.opt.o3std.build.flags.optimize=-O3
+HPM5300EVK.menu.opt.o3std.build.flags.ldspecs=
+
+HPM5300EVK.menu.opt.ogstd=Debug (-g)
+HPM5300EVK.menu.opt.ogstd.build.flags.optimize=-Og
+HPM5300EVK.menu.opt.ogstd.build.flags.ldspecs=
+
+HPM5300EVK.menu.build_type.flash=FLASH
+HPM5300EVK.menu.build_type.flash.build.linker_file=flash_xip
+HPM5300EVK.menu.build_type.flash.build.build_type_flag="-DFLASH_XIP"
+HPM5300EVK.menu.build_type.flash.build.build_type=FLASH
+
+HPM5300EVK.menu.build_type.ram=RAM
+HPM5300EVK.menu.build_type.ram.build.linker_file=ram
+HPM5300EVK.menu.build_type.ram.build.build_type_flag=
+HPM5300EVK.menu.build_type.ram.build.build_type=RAM
+
+
+################################################################################
+
+#---------------------------- UPLOAD METHODS ---------------------------
+# Upload methods is designed to upload sketch to board by [BOOTROM] via USB(USB0) or Serial(UART0)
+#
+HPM5300EVK.menu.upload_method.DFUUploadMethod=USB
+HPM5300EVK.menu.upload_method.DFUUploadMethod.upload.protocol=gdb_bmp
+HPM5300EVK.menu.upload_method.DFUUploadMethod.upload.tool=bootrom_usb_upload
+
+HPM5300EVK.menu.upload_method.serialMethod=Serial
+HPM5300EVK.menu.upload_method.serialMethod.upload.protocol=gdb_bmp
+HPM5300EVK.menu.upload_method.serialMethod.upload.tool=bootrom_serial_upload
+
+##############################################################
+HPM5301EVKLITE.name=HPM5301EVKLITE
+
+HPM5301EVKLITE.build.board=hpm5301evklite
+HPM5301EVKLITE.build.arch=riscv32
+HPM5301EVKLITE.build.soc_cfg=hpm5301
+HPM5301EVKLITE.build.f_cpu=480000000L
+HPM5301EVKLITE.build.mcu=HPM5301
+HPM5301EVKLITE.build.soc_series=HPM5300
+HPM5301EVKLITE.build.soc_flags="-DSOC_HAS_I2C2=1"
+HPM5301EVKLITE.build.jlink_soc=HPM5301xEGx
+HPM5301EVKLITE.vid=0x34B7
+HPM5301EVKLITE.pid=0x0005
+HPM5301EVKLITE.upload.vid=0x34B7
+HPM5301EVKLITE.upload.pid=0x0005
+HPM5301EVKLITE.build.core=hpmicro
+HPM5301EVKLITE.build.cpu_flags=
+HPM5301EVKLITE.build.variant=hpm5301evklite
+HPM5301EVKLITE.upload.tool=Serial
+
+#-- Optimizations
+HPM5301EVKLITE.menu.opt.osstd=Smallest (default)
+
+HPM5301EVKLITE.menu.opt.o1std=Fast (-O1)
+HPM5301EVKLITE.menu.opt.o1std.build.flags.optimize=-O1
+HPM5301EVKLITE.menu.opt.o1std.build.flags.ldspecs=
+
+HPM5301EVKLITE.menu.opt.o2std=Faster (-O2)
+HPM5301EVKLITE.menu.opt.o2std.build.flags.optimize=-O2
+HPM5301EVKLITE.menu.opt.o2std.build.flags.ldspecs=
+
+HPM5301EVKLITE.menu.opt.o3std=Fastest (-O3)
+HPM5301EVKLITE.menu.opt.o3std.build.flags.optimize=-O3
+HPM5301EVKLITE.menu.opt.o3std.build.flags.ldspecs=
+
+HPM5301EVKLITE.menu.opt.ogstd=Debug (-g)
+HPM5301EVKLITE.menu.opt.ogstd.build.flags.optimize=-Og
+HPM5301EVKLITE.menu.opt.ogstd.build.flags.ldspecs=
+
+HPM5301EVKLITE.menu.build_type.flash=FLASH
+HPM5301EVKLITE.menu.build_type.flash.build.linker_file=flash_xip
+HPM5301EVKLITE.menu.build_type.flash.build.build_type_flag="-DFLASH_XIP"
+HPM5301EVKLITE.menu.build_type.flash.build.build_type=FLASH
+
+HPM5301EVKLITE.menu.build_type.ram=RAM
+HPM5301EVKLITE.menu.build_type.ram.build.linker_file=ram
+HPM5301EVKLITE.menu.build_type.ram.build.build_type_flag=
+HPM5301EVKLITE.menu.build_type.ram.build.build_type=RAM
+
+################################################################################
+
+#---------------------------- UPLOAD METHODS ---------------------------
+# Upload methods is designed to upload sketch to board by [BOOTROM] via USB(USB0) or Serial(UART0)
+#
+
+HPM5301EVKLITE.menu.upload_method.serialMethod=Serial
+HPM5301EVKLITE.menu.upload_method.serialMethod.upload.protocol=gdb_bmp
+HPM5301EVKLITE.menu.upload_method.serialMethod.upload.tool=bootrom_serial_upload

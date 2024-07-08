@@ -1,0 +1,27 @@
+# Copyright (c) 2024 HPMicro
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# This file is designed for "Upload Using Programmer" via [Sketch > Upload Using Programmer] or [arduino-cli upload --programmer <programmer ID>].
+# For more info:
+# https://arduino.github.io/arduino-cli/0.35/platform-specification/#upload-using-an-external-programmer
+
+################CMSIS DAP################ 
+cmsis.name=CMSIS DAP
+cmsis.communication=usb
+cmsis.program.tool=cmsis_dap_upload
+cmsis.upload.tool=cmsis_dap_upload
+cmsis.program.tool.default=cmsis_dap_upload
+
+###############FT2232###################
+ft2232.name=FT2232
+ft2232.communication=usb
+ft2232.program.tool=ft2232
+ft2232.upload.tool=ft2232
+ft2232.program.tool.default=ft2232_upload
+
+##############JLINK####################
+jlink.name=JLink
+jlink.communication=usb
+jlink.upload.tool=jlink_upload
+jlink.program.tool=jlink_upload
+jlink.program.tool.default=jlink_upload

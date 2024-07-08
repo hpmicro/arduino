@@ -1,0 +1,164 @@
+# Copyright (c) 2024 HPMicro
+# SPDX-License-Identifier: BSD-3-Clause
+#
+# For more info:
+# https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5---3rd-party-Hardware-specification
+
+name=HPMicro
+version=0.1.0
+
+compiler.warning_flags=-DDEBUG_LEVEL=DEBUG_NONE
+compiler.warning_flags.none=-DDEBUG_LEVEL=DEBUG_NONE
+compiler.warning_flags.default=-DDEBUG_LEVEL=DEBUG_NONE
+compiler.warning_flags.more=-Wall -DDEBUG_LEVEL=DEBUG_FAULT
+compiler.warning_flags.all=-Wall -Wextra -DDEBUG_LEVEL=DEBUG_ALL
+
+# compiler variables
+# ----------------------
+compiler.path.windows={runtime.tools.hpm_env-1.6.0.path}\win\toolchains\rv32imac\bin\
+compiler.c.cmd.windows=riscv32-unknown-elf-gcc.exe
+compiler.c.flags=-c -g {build.flags.optimize} {compiler.warning_flags} -MD -ffunction-sections -fdata-sections -fno-builtin -fomit-frame-pointer -Wno-format 
+compiler.c.elf.cmd.windows=riscv32-unknown-elf-gcc.exe
+compiler.c.elf.flags={build.flags.optimize} -Wl,--gc-sections {build.flags.ldspecs}
+compiler.S.cmd.windows=riscv32-unknown-elf-gcc.exe
+compiler.S.flags=-c -g -MD -fdata-sections -fno-builtin
+compiler.cpp.cmd.windows=riscv32-unknown-elf-g++.exe
+compiler.cpp.flags=-c -g {build.flags.optimize} -fpermissive {compiler.warning_flags} -std=gnu++11 -MD -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions -fno-use-cxa-atexit -DBOARD_{build.variant} -DERROR_LED_PORT={build.error_led_port} -DERROR_LED_PIN={build.error_led_pin} 
+compiler.ar.cmd.windows=riscv32-unknown-elf-ar.exe
+compiler.ar.flags=
+compiler.objcopy.cmd.windows=riscv32-unknown-elf-objcopy.exe
+compiler.elf2hex.flags=-O binary
+compiler.elf2hex.cmd.windows=riscv32-unknown-elf-objcopy.exe
+compiler.ldflags={build.flags.ldspecs}
+compiler.size.cmd.windows=riscv32-unknown-elf-size.exe
+compiler.objdump.cmd.windows=objdump.cmd
+compiler.define=-DARDUINO=                            
+
+# this can be overriden in boards.txt
+build.manufacturer=hpmicro
+build.linker_file=flash_xip
+build.common_flags=-mabi=ilp32 -march=rv32imac_zicsr_zifencei
+## build.variant_system_lib=libmaple.a
+## LED stuff is not really used but is still required in the code
+build.error_led_port=GPIOB
+build.error_led_pin=1
+build.cpu_flags=
+build.hs_flag=
+build.upload_flags=
+build.flags.optimize=
+build.flags.ldspecs=--specs=nano.specs
+build.extra_flags= {build.upload_flags} {build.cpu_flags} {build.hs_flag} {build.common_flags}
+
+
+
+# These can be overridden in platform.local.txt
+compiler.c.extra_flags="-DHPMSOC_HAS_HPMSDK_DMAV2=y" "-DSUPPORTS_PRINTF=1" "-DUSE_DMA_MGR=1" {build.build_type_flag}
+compiler.c.elf.extra_flags=
+compiler.cpp.extra_flags="-DHPMSOC_HAS_HPMSDK_DMAV2=y" "-DSUPPORTS_PRINTF=1" "-DUSE_DMA_MGR=1" {build.build_type_flag}
+compiler.S.extra_flags="-DHPMSOC_HAS_HPMSDK_DMAV2=y" {build.build_type_flag}
+compiler.ar.extra_flags=
+compiler.elf2hex.extra_flags=
+
+
+compiler.libs.sdk.flags="-I{build.variant.path}" "-I{build.core.path}" "-I{build.variant.path}/drivers/inc" "-I{build.variant.path}/{build.soc_series}/ip" "-I{build.variant.path}/{build.soc_series}/{build.mcu}" "-I{build.core.path}/{build.mcu}/boot" "-I{build.variant.path}/{build.soc_series}/{build.mcu}/toolchains" "-I{build.core.path}/riscv" "-I{build.core.path}/port" "-I{build.core.path}/misc" "-I{build.core.path}/class" "-I{build.core.path}/components/dma_mgr" "-I{build.core.path}/components/spi" "-I{build.core.path}/components/usb/device" "-I{build.core.path}/middleware/cherryusb" "-I{build.core.path}/middleware/cherryusb/common" "-I{build.core.path}/middleware/cherryusb/core" "-I{build.core.path}/middleware/cherryusb/class/hid"
+compiler.libs.c.flags = "-isystem {runtime.tools.hpm_env-1.6.0.path}\win\toolchains\rv32imac\riscv32-unknown-elf\include\c++\13.2.0\riscv32-unknown-elf"  "-I{runtime.tools.hpm_env-1.6.0.path}\win\toolchains\rv32imac\riscv32-unknown-elf\include\c++\13.2.0\riscv32-unknown-elf"
+
+
+
+# USB Flags
+# ---------
+## build.usb_flags=-DUSB_VID={build.vid} -DUSB_PID={build.pid} -DUSBCON '-DUSB_MANUFACTURER={build.usb_manufacturer}' '-DUSB_PRODUCT={build.usb_product}'
+
+# Default usb manufacturer will be replaced at compile time using
+# numeric vendor ID if available or by board's specific value. 
+## build.usb_manufacturer="Unknown"
+
+
+# build patterns
+# ---------------------
+
+## Compile c files
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -DARDUINO={runtime.ide.version} {build.soc_flags} -DBOARD_I2C_NUM={build.i2c_num} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.c.extra_flags} {build.extra_flags} {compiler.libs.c.flags} {compiler.libs.sdk.flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile c++ files
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -DARDUINO={runtime.ide.version} {build.soc_flags} -DBOARD_I2C_NUM={build.i2c_num} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.cpp.extra_flags} {build.extra_flags} {build.cpu_flags} {build.hs_flag} {build.common_flags} {compiler.libs.c.flags} {compiler.libs.sdk.flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile S files
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -DARDUINO={runtime.ide.version} {build.soc_flags} -DBOARD_I2C_NUM={build.i2c_num} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.S.extra_flags} {build.extra_flags} {build.cpu_flags} {build.hs_flag} {build.common_flags} {compiler.libs.c.flags} {compiler.libs.sdk.flags} {includes} "{source_file}" -o "{object_file}"
+
+## Create archives
+recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" crD "{archive_file_path}" {compiler.ar.flags} {compiler.ar.extra_flags} "{object_file}"
+
+## Combine gc-sections, archives, and objects
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {object_files} -o "{build.path}/{build.project_name}.elf" "-Wl,-Map,{build.path}/{build.project_name}.map" -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive  -static  -nostartfiles  -Wl,--gc-sections  -Wl,--print-memory-usage  -mabi=ilp32  -march=rv32imac_zicsr_zifencei  -u _printf_float  -u _scanf_float  -Xlinker --defsym=_heap_size=0x4000  -Xlinker --defsym=_stack_size=0x4000  -Xlinker --defsym=_flash_size=4M  -Xlinker --defsym=_extram_size=32M "-T{build.variant.path}/{build.soc_series}/{build.mcu}/toolchains/gcc/{build.linker_file}.ld" {compiler.c.elf.extra_flags}
+
+## Create asm
+recipe.objcopy.asm.pattern="{runtime.platform.path}/scripts/{compiler.objdump.cmd}" "{compiler.path}riscv32-unknown-elf-objdump.exe" "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.asm"
+
+## Create hex
+recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} {compiler.elf2hex.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"
+
+## Compute size
+recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
+recipe.size.regex=^(?:\.text|\.data|\.rodata|\.text.align|\.ARM.exidx)\s+([0-9]+).*
+recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
+
+## Save Compiled Binary
+recipe.output.tmp_file={build.project_name}.bin
+recipe.output.save_file={build.project_name}.{build.variant}.bin
+
+# Upload using CMSIS_DAP
+tools.cmsis_dap_upload.cmd=cmsis_dap_upload
+tools.cmsis_dap_upload.cmd.windows=openocd_upload.cmd
+tools.cmsis_dap_upload.path={runtime.platform.path}/scripts
+tools.cmsis_dap_upload.probe_cfg={runtime.platform.path}/openocd_cfg/probes/cmsis_dap.cfg
+tools.cmsis_dap_upload.soc_cfg={runtime.platform.path}/openocd_cfg/soc/{build.soc_cfg}.cfg
+tools.cmsis_dap_upload.board_cfg={runtime.platform.path}/openocd_cfg/boards/{build.board}.cfg
+tools.cmsis_dap_upload.upload.pattern="{path}/{cmd}" {runtime.tools.hpm_env.path}/win/tools/openocd/openocd.exe {probe_cfg} {soc_cfg} {board_cfg} {build.path}/{build.project_name}.elf {build.build_type}
+tools.cmsis_dap_upload.program.pattern="{path}/{cmd}" {runtime.tools.hpm_env.path}/win/tools/openocd/openocd.exe {probe_cfg} {soc_cfg} {board_cfg} {build.path}/{build.project_name}.elf {build.build_type}
+
+# Upload using FT2232
+tools.ft2232_upload.cmd=ft2232_upload
+tools.ft2232_upload.cmd.windows=openocd_upload.cmd
+tools.ft2232_upload.path={runtime.platform.path}/scripts
+tools.ft2232_upload.probe_cfg={runtime.platform.path}/openocd_cfg/probes/ft2232.cfg
+tools.ft2232_upload.soc_cfg={runtime.platform.path}/openocd_cfg/soc/{build.soc_cfg}.cfg
+tools.ft2232_upload.board_cfg={runtime.platform.path}/openocd_cfg/boards/{build.board}.cfg
+tools.ft2232_upload.upload.pattern="{path}/{cmd}" {runtime.tools.hpm_env.path}/win/tools/openocd/openocd.exe {probe_cfg} {soc_cfg} {board_cfg} {build.path}/{build.project_name}.elf {build.build_type}
+tools.ft2232_upload.program.pattern="{path}/{cmd}" {runtime.tools.hpm_env.path}/win/tools/openocd/openocd.exe {probe_cfg} {soc_cfg} {board_cfg} {build.path}/{build.project_name}.elf {build.build_type}
+
+
+# Upload using JLink
+tools.jlink_upload.cmd=jlink_download
+tools.jlink_upload.cmd.windows=jlink_download.cmd
+tools.jlink_upload.path={runtime.platform.path}/scripts
+tools.jlink_upload.upload.pattern="{path}/{cmd}" {build.build_type} {build.jlink_soc} {build.path}/{build.project_name}.elf {build.path}
+tools.jlink_upload.program.pattern="{path}/{cmd}" {build.build_type} {build.jlink_soc} {build.path}/{build.project_name}.elf {build.path}
+
+# Upload using BOOT ROM USB
+tools.bootrom_usb_upload.cmd=bootrom_usb_upload.cmd
+tools.bootrom_usb_upload.cmd.windows=bootrom_usb_upload.cmd
+tools.bootrom_usb_upload.path={runtime.platform.path}/scripts
+tools.bootrom_usb_upload.upload.pattern="{path}/{cmd}" {runtime.tools.hpm_mfg_tool.path}\win {build.path} {build.project_name}.bin {upload.vid} {upload.pid} {build.build_type}
+tools.bootrom_usb_upload.program.pattern="{path}/{cmd}" {runtime.tools.hpm_mfg_tool.path}\win {build.path} {build.project_name}.bin {upload.vid} {upload.pid} {build.build_type}
+
+# Upload using BOOT ROM Serial
+tools.bootrom_serial_upload.cmd=bootrom_serial_upload.cmd
+tools.bootrom_serial_upload.cmd.windows=bootrom_serial_upload.cmd
+tools.bootrom_serial_upload.path={runtime.platform.path}/scripts
+tools.bootrom_serial_upload.upload.pattern="{path}/{cmd}" {runtime.tools.hpm_mfg_tool.path}\win {build.path} {build.project_name}.bin {serial.port.file} {build.build_type}
+tools.bootrom_serial_upload.program.pattern="{path}/{cmd}" {runtime.tools.hpm_mfg_tool.path}\win {build.path} {build.project_name}.bin {serial.port.file} {build.build_type}
+
+# Debugger configuration (general options)
+# ----------------------------------------
+# EXPERIMENTAL feature:
+# - this is alpha and may be subject to change without notice
+debug.executable={build.path}/{build.project_name}.elf
+debug.toolchain=gdb
+debug.toolchain.path={compiler.path}
+debug.toolchain.prefix=riscv32-unknown-elf-
+debug.server=openocd
+debug.server.openocd.path={runtime.tools.hpm_env.path}/win/tools/openocd/openocd
+debug.server.openocd.scripts.1={runtime.platform.path}\openocd_cfg\probes\cmsis_dap.cfg
+debug.server.openocd.scripts.2={runtime.platform.path}\openocd_cfg\soc\{build.soc_cfg}.cfg
+debug.server.openocd.scripts.3={runtime.platform.path}\openocd_cfg\boards\{build.board}.cfg
